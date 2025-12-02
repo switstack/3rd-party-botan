@@ -112,7 +112,7 @@ size_t PKCS11_EC_PrivateKey::key_length() const
 
 std::vector<uint8_t> PKCS11_EC_PrivateKey::public_key_bits() const
    {
-   return public_point().encode(PointGFp::COMPRESSED);
+   return public_point().encode(PointGFp::UNCOMPRESSED);
    }
 
 size_t PKCS11_EC_PrivateKey::estimated_strength() const
@@ -127,7 +127,8 @@ bool PKCS11_EC_PrivateKey::check_key(RandomNumberGenerator&, bool) const
 
 AlgorithmIdentifier PKCS11_EC_PrivateKey::algorithm_identifier() const
    {
-   return AlgorithmIdentifier(get_oid(), domain().DER_encode(EC_DOMPAR_ENC_EXPLICIT));
+   return AlgorithmIdentifier(get_oid(), domain().DER_encode(
+      (domain().get_curve_oid().empty() ? EC_DOMPAR_ENC_EXPLICIT : EC_DOMPAR_ENC_OID)));
    }
 }
 
